@@ -1,0 +1,64 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution2{
+    static ArrayList<Integer>[] g;
+    
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw = new PrintWriter(System.out);
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        g = new ArrayList[n + 1];
+        
+        for (int i = 0; i <= n; i++) {
+            g[i] = new ArrayList<Integer>();
+        }
+
+        for (int i = 0; i < m; i++) {
+            st = new StringTokenizer(br.readLine());
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+
+            g[u].add(v);
+            g[v].add(u);
+        }
+
+        int[] color = new int[n + 1];
+        Arrays.fill(color, -1);
+
+        int ans = 0;
+
+        for (int i = 1; i <= n; i++) {
+          if (color[i] == -1){
+
+            int c0 = 0;
+            int c1 = 0;
+
+            Queue<Integer> q = new ArrayDeque<Integer>();
+            q.add(i);
+            color[i] = 0;
+
+            while (!q.isEmpty()) {
+                int x = q.poll();
+
+                if (color[x] == 0) c0++;
+                else c1++;
+
+                for (int nbr : g[x]) {
+                    if (color[nbr] == -1) {
+                        color[nbr] = 1 - color[x];
+                        q.add(nbr);
+                    }
+                }
+            }
+            ans += Math.max(c0, c1);
+          }
+        }
+
+        pw.println(ans);
+        pw.flush();
+    }
+}

@@ -1,0 +1,79 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution7 {
+
+    static ArrayList<Integer>[] graph;
+
+    public static void main(String[] args) throws IOException {
+        // Fast input and output
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw = new PrintWriter(System.out);
+
+        // Read number of nodes (n), root node (R)
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(st.nextToken());
+        int root = Integer.parseInt(st.nextToken());
+
+        // Initialize graph
+        graph = new ArrayList[n + 1];
+        for (int i = 0; i <= n; i++) {
+            graph[i] = new ArrayList<Integer>();
+        }
+
+        // Read the edges
+        for (int i = 0; i < n - 1; i++) {
+            st = new StringTokenizer(br.readLine());
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            graph[u].add(v);
+            graph[v].add(u);  // Since it's a bidirectional tree
+        }
+
+        // To store the subtree size of each node
+        int[] subtree = new int[n + 1];
+        Arrays.fill(subtree, 1);  // Every node counts itself
+
+        // For DFS traversal, using an iterative approach with a stack
+        int[] parent = new int[n + 1];
+        Arrays.fill(parent, -1);
+        Stack<Integer> stack = new Stack<Integer>();
+        stack.push(root);
+
+        // DFS iterative traversal to calculate subtree sizes
+        while (!stack.isEmpty()) {
+            int node = stack.peek();
+            boolean processed = true;
+
+            // Explore all unvisited neighbors
+            for (int neighbor : graph[node]) {
+                if (neighbor != parent[node]) {
+                    parent[neighbor] = node;
+                    stack.push(neighbor);
+                    processed = false;
+                    break;
+                }
+            }
+
+            // Once all neighbors are processed, calculate the subtree size
+            if (processed) {
+                stack.pop();
+                if (parent[node] != -1) {
+                    subtree[parent[node]] += subtree[node];  // Add subtree size to parent
+                }
+            }
+        }
+
+        // Read the number of queries
+        int q = Integer.parseInt(br.readLine());
+
+        // Process each query and print the subtree size for node X
+        for (int i = 0; i < q; i++) {
+            int x = Integer.parseInt(br.readLine());
+            pw.println(subtree[x]);
+        }
+
+        // Flush the output
+        pw.flush();
+    }
+}

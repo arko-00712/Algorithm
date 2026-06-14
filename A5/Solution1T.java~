@@ -1,0 +1,66 @@
+import java.util.*;
+import java.io.*;
+
+public class Solution1T{
+  
+  static ArrayList<Integer>[] graph;
+  
+  public static void main(String[] args) throws IOException{
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    PrintWriter pw = new PrintWriter(System.out);
+    StringTokenizer st;
+    
+    // Read the number of test cases
+    int Q = Integer.parseInt(br.readLine());
+    
+    // Process each test case
+    for (int t = 0; t < Q; t++) {
+      // For each test case, read n and m
+      st = new StringTokenizer(br.readLine());
+      int n = Integer.parseInt(st.nextToken());
+      int m = Integer.parseInt(st.nextToken());
+      graph = new ArrayList[n + 1];
+      
+      // Initialize the graph
+      for (int i = 0; i <= n; i++) {
+        graph[i] = new ArrayList<Integer>();
+      }
+      
+      // Read edges and construct the graph
+      for (int i = 0; i < m; i++) {
+        st = new StringTokenizer(br.readLine());
+        int u = Integer.parseInt(st.nextToken());
+        int v = Integer.parseInt(st.nextToken());
+        graph[u].add(v);
+        graph[v].add(u);
+      }
+      
+      // BFS to print the nodes in BFS order
+      int source = 1;
+      boolean[] visited = new boolean[n + 1];
+      Queue<Integer> q = new ArrayDeque<Integer>();
+      q.add(source);
+      
+      // Perform BFS
+      while (!q.isEmpty()) {
+        int x = q.poll();
+        if (!visited[x]) {
+          visited[x] = true;
+          pw.print(x);
+          pw.print(" ");
+        }
+        for (int nbr : graph[x]) {
+          if (!visited[nbr]) {
+            q.add(nbr);
+          }
+        }
+      }
+      
+      // Print a new line after each test case
+      pw.println();
+    }
+    
+    // Flush the output at the end
+    pw.flush();
+  }
+}

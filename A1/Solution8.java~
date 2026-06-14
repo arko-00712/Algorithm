@@ -1,0 +1,88 @@
+import java.util.Scanner;
+
+public class Solution8 {
+
+    // Convert name into special lexicographical order
+    static String convert(String s) {
+        String result = "";
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+
+            if (c >= 'a' && c <= 'z') {
+                result += c;  
+            } else {
+                // move uppercase letters after lowercase
+                result += (char)(c + 100);
+            }
+        }
+
+        return result;
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        int N = sc.nextInt();
+        sc.nextLine();
+
+        String[] lines = new String[N];
+        String[] names = new String[N];
+        String[] times = new String[N];
+
+        // Input
+        for (int i = 0; i < N; i++) {
+            lines[i] = sc.nextLine();
+
+            String[] parts = lines[i].split(" ");
+            names[i] = parts[0];
+            times[i] = parts[parts.length - 1];
+        }
+
+        // Bubble Sort
+        for (int i = 0; i < N - 1; i++) {
+            for (int j = 0; j < N - i - 1; j++) {
+
+                String name1 = convert(names[j]);
+                String name2 = convert(names[j + 1]);
+
+                boolean swap = false;
+
+                // Compare names
+                if (name1.compareTo(name2) > 0) {
+                    swap = true;
+                }
+                // If names equal ? compare time (later first)
+                else if (name1.equals(name2)) {
+                    if (times[j].compareTo(times[j + 1]) < 0) {
+                        swap = true;
+                    }
+                }
+
+                if (swap) {
+                    // Swap all related arrays
+                    String temp;
+
+                    temp = lines[j];
+                    lines[j] = lines[j + 1];
+                    lines[j + 1] = temp;
+
+                    temp = names[j];
+                    names[j] = names[j + 1];
+                    names[j + 1] = temp;
+
+                    temp = times[j];
+                    times[j] = times[j + 1];
+                    times[j + 1] = temp;
+                }
+            }
+        }
+
+        // Output
+        for (int i = 0; i < N; i++) {
+            System.out.println(lines[i]);
+        }
+
+        sc.close();
+    }
+}

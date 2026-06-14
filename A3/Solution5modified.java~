@@ -1,0 +1,42 @@
+import java.util.*;
+
+public class Solution5modified {
+
+    static long mod;
+
+    // Function to compute the sum of a^0 + a^1 + a^2 + ... + a^n % mod
+    static long solve(long a, long n) {
+        long p = 1; // p will store the current power of a
+        long sum = 1; // Initialize sum with 1 for a^0
+        
+        while (n > 0) {
+            if (n % 2 == 1) {  // If n is odd, add the current power of a
+                sum = (sum + p) % mod;
+            }
+            p = (p * a) % mod;  // Update p to a^i for the next power
+            n /= 2;  // Halve the exponent
+        }
+
+        return sum;
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        int T = sc.nextInt();  // Read the number of test cases
+
+        while (T-- > 0) {
+            // Read the base (a), exponent (n), and modulus (mod)
+            long a = sc.nextLong();
+            long n = sc.nextLong();
+            mod = sc.nextLong();
+
+            // Calculate the result (sum of a^0 + a^1 + ... + a^n % mod)
+            long ans = solve(a, n);
+
+            // Print the result for the current test case
+            System.out.println(ans);
+        }
+    }
+}

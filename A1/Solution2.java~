@@ -1,0 +1,17 @@
+import java.util.Scanner;
+public class Solution2{
+  public static void main(String[] args){
+    Scanner sc = new Scanner(System.in);
+    int T = sc.nextInt();
+    for ( int i = 0 ; i < T ; i++ ) { 
+      System.out.print("calculate ");
+      double n1 = sc.nextDouble() ; 
+      String op = sc.next() ;
+      double n2 = sc.nextDouble() ;
+       if (op.equals("+"))System.out.println(n1+n2);
+       else if(op.equals("-"))System.out.println(n1-n2);
+       else if(op.equals("*"))System.out.println(n1*n2);
+       else System.out.println(n1/n2);
+    }
+  }
+}

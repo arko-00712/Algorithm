@@ -1,0 +1,118 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution3{
+    static int[] parent, size;
+    static int n, m;
+    static int[][] edges;
+
+    static int find(int x) {
+        if (parent[x] == x) return x;
+        parent[x] = find(parent[x]);
+        return parent[x];
+    }
+
+    static boolean union(int a, int b) {
+        int rootA = find(a);
+        int rootB = find(b);
+
+        if (rootA == rootB) return false;
+
+        if (size[rootA] < size[rootB]) {
+            parent[rootA] = rootB;
+            size[rootB] += size[rootA];
+        } else {
+            parent[rootB] = rootA;
+            size[rootA] += size[rootB];
+        }
+
+        return true;
+    }
+
+    static void resetDSU() {
+        parent = new int[n + 1];
+        size = new int[n + 1];
+
+        for (int i = 1; i <= n; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    static long kruskal(int banned, ArrayList<Integer> usedEdges) {
+        resetDSU();
+
+        long cost = 0;
+        int cnt = 0;
+
+        for (int i = 0; i < m; i++) {
+            if (i == banned) continue;
+
+            int u = edges[i][0];
+            int v = edges[i][1];
+            int w = edges[i][2];
+
+            if (union(u, v)) {
+                cost += w;
+                cnt++;
+
+                if (usedEdges != null) {
+                    usedEdges.add(i);
+                }
+            }
+        }
+
+        if (cnt != n - 1) return -1;
+        return cost;
+    }
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw = new PrintWriter(System.out);
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+
+        edges = new int[m][3];
+
+        for (int i = 0; i < m; i++) {
+            st = new StringTokenizer(br.readLine());
+
+            edges[i][0] = Integer.parseInt(st.nextToken());
+            edges[i][1] = Integer.parseInt(st.nextToken());
+            edges[i][2] = Integer.parseInt(st.nextToken());
+        }
+
+        Arrays.sort(edges, new Comparator<int[]>() {
+            public int compare(int[] a, int[] b) {
+                return a[2] - b[2];
+            }
+        });
+
+        ArrayList<Integer> usedEdges = new ArrayList<Integer>();
+
+        long best = kruskal(-1, usedEdges);
+
+        long secondBest = Long.MAX_VALUE;
+
+        for (int i = 0; i < usedEdges.size(); i++) {
+            int bannedEdge = usedEdges.get(i);
+
+            long now = kruskal(bannedEdge, null);
+
+            if (now != -1 && now > best) {
+                secondBest = Math.min(secondBest, now);
+            }
+        }
+
+        if (secondBest == Long.MAX_VALUE) {
+            pw.println(-1);
+        } else {
+            pw.println(secondBest);
+        }
+
+        pw.flush();
+    }
+}

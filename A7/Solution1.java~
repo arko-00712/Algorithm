@@ -1,0 +1,123 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw = new PrintWriter(System.out);
+        StringTokenizer st;
+
+        // First line
+        st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+        int S = Integer.parseInt(st.nextToken());
+        int D = Integer.parseInt(st.nextToken());
+
+        int[] u = new int[M];
+        int[] v = new int[M];
+        long[] w = new long[M];
+
+        // Read source nodes
+        st = new StringTokenizer(br.readLine());
+        for(int i = 0; i < M; i++) {
+            u[i] = Integer.parseInt(st.nextToken());
+        }
+
+        // Read destination nodes
+        st = new StringTokenizer(br.readLine());
+        for(int i = 0; i < M; i++) {
+            v[i] = Integer.parseInt(st.nextToken());
+        }
+
+        // Read weights
+        st = new StringTokenizer(br.readLine());
+        for(int i = 0; i < M; i++) {
+            w[i] = Long.parseLong(st.nextToken());
+        }
+
+        // Adjacency list:
+        // each int[] stores {neighbor, weight}
+        ArrayList<long[]>[] graph = new ArrayList[N+1];
+
+        for(int i=1;i<=N;i++){
+            graph[i]=new ArrayList<>();
+        }
+
+        for(int i=0;i<M;i++){
+            graph[u[i]].add(new long[]{v[i], w[i]});
+        }
+
+        long[] dist = new long[N+1];
+        int[] parent = new int[N+1];
+
+        Arrays.fill(dist, Long.MAX_VALUE);
+        Arrays.fill(parent,-1);
+
+        // Priority Queue stores {distance,node}
+        PriorityQueue<long[]> pq =
+                new PriorityQueue<>((a,b)->Long.compare(a[0],b[0]));
+
+        dist[S]=0;
+        pq.add(new long[]{0,S});
+
+        while(!pq.isEmpty()){
+
+            long[] current = pq.poll();
+
+            long currentDist = current[0];
+            int node = (int)current[1];
+
+            if(currentDist > dist[node]){
+                continue;
+            }
+
+            for(long[] edge : graph[node]){
+
+                int next = (int)edge[0];
+                long weight = edge[1];
+
+                if(dist[node] + weight < dist[next]){
+
+                    dist[next] = dist[node] + weight;
+                    parent[next] = node;
+
+                    pq.add(new long[]{
+                            dist[next],
+                            next
+                    });
+                }
+            }
+        }
+
+        if(dist[D]==Long.MAX_VALUE){
+            pw.println(-1);
+            pw.close();
+            return;
+        }
+
+        // shortest distance
+        pw.println(dist[D]);
+
+        // reconstruct path
+        ArrayList<Integer> path = new ArrayList<>();
+
+        int cur = D;
+
+        while(cur!=-1){
+            path.add(cur);
+            cur=parent[cur];
+        }
+
+        Collections.reverse(path);
+
+        for(int x:path){
+            pw.print(x+" ");
+        }
+
+        pw.println();
+        pw.close();
+    }
+}

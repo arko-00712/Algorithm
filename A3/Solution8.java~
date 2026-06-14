@@ -1,0 +1,45 @@
+import java.util.*;
+
+public class Solution8 {
+
+    static int postIndex;
+
+    static void build(int[] inorder, int[] postorder, int l, int r) {
+        if (l > r) return;
+
+        int root = postorder[postIndex--];
+
+        System.out.print(root + " ");
+
+        int pos = -1;
+        for (int i = l; i <= r; i++) {
+            if (inorder[i] == root) {
+                pos = i;
+                break;
+            }
+        }
+
+        build(inorder, postorder, l, pos - 1);
+        build(inorder, postorder, pos + 1, r);
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        int n = sc.nextInt();
+
+        int[] inorder = new int[n];
+        int[] postorder = new int[n];
+
+        for (int i = 0; i < n; i++)
+            inorder[i] = sc.nextInt();
+
+        for (int i = 0; i < n; i++)
+            postorder[i] = sc.nextInt();
+
+        postIndex = n - 1;
+
+        build(inorder, postorder, 0, n - 1);
+    }
+}

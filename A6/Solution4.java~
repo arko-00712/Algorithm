@@ -1,0 +1,68 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution4{
+    static int farthestNode;
+    static int maxDistance;
+
+    public static void bfs(int start, ArrayList<Integer>[] graph, int n) {
+        int[] dist = new int[n + 1];
+        Arrays.fill(dist, -1);
+
+        ArrayDeque<Integer> q = new ArrayDeque<Integer>();
+        q.add(start);
+        dist[start] = 0;
+
+        farthestNode = start;
+        maxDistance = 0;
+
+        while (!q.isEmpty()) {
+            int u = q.poll();
+
+            for (int v : graph[u]) {
+                if (dist[v] == -1) {
+                    dist[v] = dist[u] + 1;
+                    q.add(v);
+
+                    if (dist[v] > maxDistance) {
+                        maxDistance = dist[v];
+                        farthestNode = v;
+                    }
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw = new PrintWriter(System.out);
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int n = Integer.parseInt(st.nextToken());
+
+        ArrayList<Integer>[] graph = new ArrayList[n + 1];
+        for (int i = 1; i <= n; i++) {
+            graph[i] = new ArrayList<Integer>();
+        }
+
+        for (int i = 0; i < n - 1; i++) {
+            st = new StringTokenizer(br.readLine());
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+
+            graph[u].add(v);
+            graph[v].add(u);
+        }
+
+        bfs(1, graph, n);
+        int a = farthestNode;
+
+        bfs(a, graph, n);
+        int b = farthestNode;
+        int diameter = maxDistance;
+
+        pw.println(diameter);
+        pw.println(a + " " + b);
+        pw.close();
+    }
+}

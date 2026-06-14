@@ -1,0 +1,64 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution7{
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter out = new PrintWriter(System.out);
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int n = Integer.parseInt(st.nextToken());
+        String A = st.nextToken();
+        String B = st.nextToken();
+
+        String[] words = new String[n];
+
+        // adjacency: for each starting letter, store indices of words
+        ArrayList<Integer>[] adj = new ArrayList[26];
+        for (int i = 0; i < 26; i++) {
+            adj[i] = new ArrayList<>();
+        }
+
+        // read words and fill adj
+        for (int i = 0; i < n; i++) {
+            words[i] = br.readLine();
+            int first = words[i].charAt(0) - 'A';
+            adj[first].add(i);
+        }
+
+        boolean[] visited = new boolean[n];
+        Queue<Integer> q = new LinkedList<>();
+
+        // start from all words equal to A
+        for (int i = 0; i < n; i++) {
+            if (words[i].equals(A)) {
+                q.add(i);
+                visited[i] = true;
+            }
+        }
+
+        boolean found = false;
+
+        while (!q.isEmpty()) {
+            int cur = q.poll();
+
+            if (words[cur].equals(B)) {
+                found = true;
+                break;
+            }
+
+            char lastChar = words[cur].charAt(words[cur].length() - 1);
+            int idx = lastChar - 'A';
+
+            for (int next : adj[idx]) {
+                if (!visited[next]) {
+                    visited[next] = true;
+                    q.add(next);
+                }
+            }
+        }
+
+        out.println(found ? "YES" : "NO");
+        out.flush();
+    }
+}

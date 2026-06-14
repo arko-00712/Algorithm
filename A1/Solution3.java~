@@ -1,0 +1,17 @@
+import java.util.Scanner;
+
+public class Solution3 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int T = sc.nextInt(); 
+        if(T>=1 && T<=1000){
+        for (int t = 0; t < T; t++) {
+            int N = sc.nextInt();  
+            if(N >=1 && N <= 1000000){
+            int sum = N*(N+1)/2;
+            System.out.println(sum);
+            }
+        }
+        }
+    }
+}

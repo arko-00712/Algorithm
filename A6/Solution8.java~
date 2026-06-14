@@ -1,0 +1,89 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution8{
+    
+     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+     PrintWriter pw = new PrintWriter(System.out);
+     StringTokenizer st;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw = new PrintWriter(System.out);
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        
+        int n = Integer.parseInt(st.nextToken()); 
+        String[] words = new String[n];
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());;
+            words[i] = st.nextToken();
+        }
+        
+        String result = findOrder(words);
+        pw.println(result); // Print the result
+        pw.flush();
+    }
+
+    // Function to find the lexicographically smallest order of the characters
+    static String findOrder(String[] words) {
+        // Initialize the graph using ArrayList for each character
+        ArrayList<Integer>[] graph = new ArrayList[26];
+        int[] inDegree = new int[26]; // Track in-degrees (dependencies)
+        
+        // Initialize each list inside graph array
+        for (int i = 0; i < 26; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        // Compare adjacent words to figure out ordering
+        for (int i = 0; i < words.length - 1; i++) {
+            String word1 = words[i];
+            String word2 = words[i + 1];
+            int minLength = Math.min(word1.length(), word2.length());
+
+            // Find the first differing character
+            for (int j = 0; j < minLength; j++) {
+                if (word1.charAt(j) != word2.charAt(j)) {
+                    char from = word1.charAt(j);
+                    char to = word2.charAt(j);
+                    int fromIndex = from - 'a';
+                    int toIndex = to - 'a';
+                    // Add an edge if not already added
+                    if (!graph[fromIndex].contains(toIndex)) {
+                        graph[fromIndex].add(toIndex);
+                        inDegree[toIndex]++;
+                    }
+                    break;
+                }
+            }
+        }
+
+        // Perform Topological Sort (Kahn's algorithm)
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < 26; i++) {
+            if (inDegree[i] == 0) {
+                queue.offer(i); // Add character with no dependencies (in-degree 0)
+            }
+        }
+
+        StringBuilder order = new StringBuilder();
+        while (!queue.isEmpty()) {
+            int current = queue.poll();
+            order.append((char) (current + 'a'));
+            
+            // Decrease in-degree of neighbors
+            for (int neighbor : graph[current]) {
+                if (--inDegree[neighbor] == 0) {
+                    queue.offer(neighbor);
+                }
+            }
+        }
+
+        // Check for cycles: if the order length is not 26, there's a cycle (impossible ordering)
+        if (order.length() != 26) {
+            return "-1";
+        }
+
+        return order.toString();
+    }
+}

@@ -1,0 +1,43 @@
+import java.util.*;
+
+public class Solution6 {
+    public static void main(String[] args) {
+        
+        Scanner sc = new Scanner(System.in);
+        
+        int n = sc.nextInt();
+        int k = sc.nextInt();
+        
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = sc.nextInt();
+        }
+        
+        HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+        
+        int left = 0;
+        int maxLength = 0;
+        
+        for (int right = 0; right < n; right++) {
+            
+            // Add current element
+            map.put(arr[right], map.getOrDefault(arr[right], 0) + 1);
+            
+            // If more than k distinct elements, shrink window
+            while (map.size() > k) {
+                map.put(arr[left], map.get(arr[left]) - 1);
+                
+                if (map.get(arr[left]) == 0) {
+                    map.remove(arr[left]);
+                }
+                
+                left++;
+            }
+            
+            // Update maximum length
+            maxLength = Math.max(maxLength, right - left + 1);
+        }
+        
+        System.out.println(maxLength);
+    }
+}

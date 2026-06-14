@@ -1,0 +1,47 @@
+import java.util.*;
+
+public class Solution4 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        int N = sc.nextInt();
+        int M = sc.nextInt();
+
+        int[] u = new int[M];
+        int[] v = new int[M];
+        int[] degree = new int[N + 1];
+
+        for (int i = 0; i < M; i++) {
+            u[i] = sc.nextInt();
+        }
+
+        for (int i = 0; i < M; i++) {
+            v[i] = sc.nextInt();
+        }
+
+        for (int i = 0; i < M; i++) {
+            degree[u[i]]++;
+            degree[v[i]]++;
+        }
+
+        int odd = 0;
+
+        for (int i = 1; i <= N; i++) {
+            if (degree[i] % 2 != 0) {
+                odd++;
+            }
+        }
+
+        if (odd == 0 || odd == 2) {
+            System.out.println("YES");
+        } else {
+            System.out.println("NO");
+        }
+
+        sc.close();
+    }
+}
+//In case of Directed Graph
+//start node ? out-degree = in-degree + 1
+//end node   ? in-degree = out-degree + 1
+//all others ? in-degree = out-degree

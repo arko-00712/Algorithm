@@ -1,0 +1,99 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution4{
+    static int[] parent, size;
+
+    static int find(int x) {
+        if (parent[x] == x) return x;
+        parent[x] = find(parent[x]);
+        return parent[x];
+    }
+
+    static void union(int a, int b) {
+        int rootA = find(a);
+        int rootB = find(b);
+
+        if (rootA == rootB) return;
+
+        if (size[rootA] < size[rootB]) {
+            parent[rootA] = rootB;
+            size[rootB] += size[rootA];
+        } else {
+            parent[rootB] = rootA;
+            size[rootA] += size[rootB];
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw = new PrintWriter(System.out);
+
+        int T = Integer.parseInt(br.readLine());
+
+        while (T-- > 0) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+
+            int n = Integer.parseInt(st.nextToken());
+            int m = Integer.parseInt(st.nextToken());
+            int s = Integer.parseInt(st.nextToken());
+            int d = Integer.parseInt(st.nextToken());
+
+            int[] u = new int[m];
+            int[] v = new int[m];
+            int[] w = new int[m];
+
+            st = new StringTokenizer(br.readLine());
+            for (int i = 0; i < m; i++) {
+                u[i] = Integer.parseInt(st.nextToken());
+            }
+
+            st = new StringTokenizer(br.readLine());
+            for (int i = 0; i < m; i++) {
+                v[i] = Integer.parseInt(st.nextToken());
+            }
+
+            st = new StringTokenizer(br.readLine());
+            for (int i = 0; i < m; i++) {
+                w[i] = Integer.parseInt(st.nextToken());
+            }
+
+            int[][] edges = new int[m][3];
+
+            for (int i = 0; i < m; i++) {
+                edges[i][0] = u[i];
+                edges[i][1] = v[i];
+                edges[i][2] = w[i];
+            }
+
+            Arrays.sort(edges, new Comparator<int[]>() {
+                public int compare(int[] a, int[] b) {
+                    return Integer.compare(b[2], a[2]);
+                }
+            });
+
+            parent = new int[n + 1];
+            size = new int[n + 1];
+
+            for (int i = 1; i <= n; i++) {
+                parent[i] = i;
+                size[i] = 1;
+            }
+
+            int ans = 0;
+
+            for (int i = 0; i < m; i++) {
+                union(edges[i][0], edges[i][1]);
+
+                if (find(s) == find(d)) {
+                    ans = edges[i][2];
+                    break;
+                }
+            }
+
+            pw.println(ans);
+        }
+
+        pw.flush();
+    }
+}

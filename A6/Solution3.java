@@ -1,0 +1,60 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution3{
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw = new PrintWriter(System.out);
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        
+        int n = Integer.parseInt(st.nextToken());
+
+        st = new StringTokenizer(br.readLine());
+        int x1 = Integer.parseInt(st.nextToken()) - 1;
+        int y1 = Integer.parseInt(st.nextToken()) - 1;
+        int x2 = Integer.parseInt(st.nextToken()) - 1;
+        int y2 = Integer.parseInt(st.nextToken()) - 1;
+
+        int[][] dist = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(dist[i], -1);
+        }
+
+        int[] dx = {-2, -2, -1, -1, 1, 1, 2, 2};
+        int[] dy = {-1, 1, -2, 2, -2, 2, -1, 1};
+
+        int[] qx = new int[n * n];
+        int[] qy = new int[n * n];
+        int front = 0;
+        int rear = 0;
+
+        qx[rear] = x1;
+        qy[rear] = y1;
+        rear++;
+
+        dist[x1][y1] = 0;
+
+        while (front < rear) {
+            int x = qx[front];
+            int y = qy[front];
+            front++;
+
+            for (int i = 0; i < 8; i++) {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+
+                if (nx >= 0 && nx < n && ny >= 0 && ny < n) {
+                    if (dist[nx][ny] == -1) {
+                        dist[nx][ny] = dist[x][y] + 1;
+                        qx[rear] = nx;
+                        qy[rear] = ny;
+                        rear++;
+                    }
+                }
+            }
+        }
+
+        pw.println(dist[x2][y2]);
+        pw.flush();
+    }
+}
